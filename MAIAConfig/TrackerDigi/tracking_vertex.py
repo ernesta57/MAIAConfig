@@ -1,12 +1,15 @@
 from GaudiKernel.Constants import INFO, WARNING
 from Configurables import DDPlanarDigi
-from Common.overlay_utils import overlay_input
+from Configurables import MuonCVXDDigitiser
 
-def VXDBarrel_cfg(args):
+def new_VXDBarrel(args):
     """
     Create a new vertex barrel instance with the given parameters.
     """
-    inputHitCollections = overlay_input("VertexBarrelCollection", args)
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexBarrelCollection"]
+    else:
+        inputHitCollections = ["VertexBarrelCollection"]
     return DDPlanarDigi(
         "VXDBarrelDigitiser",
         CorrectTimesForPropagation = True,
@@ -21,15 +24,17 @@ def VXDBarrel_cfg(args):
         SimTrackHitCollectionName = inputHitCollections,
         SimTrkHitRelCollection = ["VXDBarrelHitsRelations"],
         TrackerHitCollectionName = ["VXDBarrelHits"],
-        ForceHitsOntoSurface = True,
         OutputLevel = INFO
     )
 
-def VXDEndcap_cfg(args):
+def new_VXDEndcap(args):
     """
     Create a new vertex endcap instance with the given parameters.
     """
-    inputHitCollections = overlay_input("VertexEndcapCollection", args)
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexEndcapCollection"]
+    else:
+        inputHitCollections = ["VertexEndcapCollection"]
     return DDPlanarDigi(
         "VXDEndcapDigitiser",
         CorrectTimesForPropagation = True,
@@ -44,6 +49,109 @@ def VXDEndcap_cfg(args):
         SimTrackHitCollectionName = inputHitCollections,
         SimTrkHitRelCollection = ["VXDEndcapHitsRelations"],
         TrackerHitCollectionName = ["VXDEndcapHits"],
-        ForceHitsOntoSurface = True,
+        OutputLevel = INFO
+    )
+
+def new_VXDBarrel_Realistic(args):
+    """
+    Create a new vertex barrel digitiser instance with realistic digitization.
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexBarrelCollection"]
+    else:
+        inputHitCollections = ["VertexBarrelCollection"]
+    return MuonCVXDDigitiser(
+        "VertexBarrelDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 0.025,
+        PixelSizeX = 0.025,
+        TanLorentzY = 0.0,
+        TanLorentz = 0.8,
+        # Diffusion = 0.07,
+        Threshold = 500,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 15000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.03,
+        LayerIDs = [0, 1, 2, 4, 6],
+        SubDetectorName = "VertexBarrel",
+        TimeWindowMax = 0.15,
+        TimeWindowMin = -0.09,
+        UseTimeWindow = True,
+        FilteredOutputCollectionName = ["VXDBarrelHits_TimeFiltered"],
+        FilteredRelationColName = ["VXDBarrelHitsRelations_TimeFiltered"],
+        FilteredRawHitsLinkColName = ["VXDBarrelRawHitsRelations_TimeFiltered"],
+        CollectionName = inputHitCollections,
+        RelationColName = ["VXDBarrelHitsRelations"],
+        SimHitLocCollectionName = ["VertexBarrelHits_Passed"],
+        RawHitsLinkColName = ["VXDBarrelRawHitsRelations"],
+        OutputCollectionName = ["VXDBarrelHits"],
+        OutputLevel = INFO
+    )
+
+def new_VXDEndcap_Realistic(args):
+    """
+    Create a new vertex endcap digitiser instance with realistic digitization.
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexEndcapCollection"]
+    else:
+        inputHitCollections = ["VertexEndcapCollection"]
+    return MuonCVXDDigitiser(
+        "VertexEndcapDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 0.025,
+        PixelSizeX = 0.025,
+        TanLorentzY = 0.0,
+        TanLorentz = 0.0,
+        # Diffusion = 0.07,
+        Threshold = 500,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 15000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.03,
+        LayerIDs = [0, 1, 2, 3, 4, 5, 6, 7],
+        SubDetectorName = "VertexEndcap",
+        TimeWindowMax = 0.15,
+        TimeWindowMin = -0.09,
+        UseTimeWindow = True,
+        FilteredOutputCollectionName = ["VXDEndcapHits_TimeFiltered"],
+        FilteredRelationColName = ["VXDEndcapHitsRelations_TimeFiltered"],
+        FilteredRawHitsLinkColName = ["VXDEndcapRawHitsRelations_TimeFiltered"],
+        CollectionName = inputHitCollections,
+        RelationColName = ["VXDEndcapHitsRelations"],
+        SimHitLocCollectionName = ["VertexEndcapHits_Passed"],
+        RawHitsLinkColName = ["VXDEndcapRawHitsRelations"],
+        OutputCollectionName = ["VXDEndcapHits"],
         OutputLevel = INFO
     )

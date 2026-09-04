@@ -20,15 +20,26 @@ def makeDigiAlgList(the_args):
         algList.append(overlay_ip_cfg(the_args))
 
     # Tracker Digitization
-    from TrackerDigi.tracking_vertex import VXDBarrel_cfg, VXDEndcap_cfg
-    from TrackerDigi.tracking_inner import ITBarrel_cfg, ITEndcap_cfg
-    from TrackerDigi.tracking_outer import OTBarrel_cfg, OTEndcap_cfg
-    algList.append(VXDBarrel_cfg(the_args))
-    algList.append(VXDEndcap_cfg(the_args))
-    algList.append(ITBarrel_cfg(the_args))
-    algList.append(ITEndcap_cfg(the_args))
-    algList.append(OTBarrel_cfg(the_args))
-    algList.append(OTEndcap_cfg(the_args))
+    if (the_args.doRealisticDigi):
+        from TrackerDigi.tracking_vertex import new_VXDBarrel_Realistic, new_VXDEndcap_Realistic
+        from TrackerDigi.tracking_inner import new_ITBarrel_Realistic, new_ITEndcap_Realistic
+        from TrackerDigi.tracking_outer import new_OTBarrel_Realistic, new_OTEndcap_Realistic
+        algList.append(new_VXDBarrel_Realistic(the_args))
+        algList.append(new_VXDEndcap_Realistic(the_args))
+        algList.append(new_ITBarrel_Realistic(the_args))
+        algList.append(new_ITEndcap_Realistic(the_args))
+        algList.append(new_OTBarrel_Realistic(the_args))
+        algList.append(new_OTEndcap_Realistic(the_args))
+    else:
+        from TrackerDigi.tracking_vertex import new_VXDBarrel, new_VXDEndcap
+        from TrackerDigi.tracking_inner import new_ITBarrel, new_ITEndcap
+        from TrackerDigi.tracking_outer import new_OTBarrel, new_OTEndcap
+        algList.append(new_VXDBarrel(the_args))
+        algList.append(new_VXDEndcap(the_args))
+        algList.append(new_ITBarrel(the_args))
+        algList.append(new_ITEndcap(the_args))
+        algList.append(new_OTBarrel(the_args))
+        algList.append(new_OTEndcap(the_args))
 
     # Tracker Hit Coning (BIB cleaning). When enabled the merger downstream reads
     # the "...Coned" collections produced here (see Tracking/mergers.py).

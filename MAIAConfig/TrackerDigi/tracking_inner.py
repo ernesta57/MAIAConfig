@@ -1,16 +1,19 @@
 from GaudiKernel.Constants import INFO, WARNING
 from Configurables import DDPlanarDigi
-from Common.overlay_utils import overlay_input
+from Configurables import MuonCVXDDigitiser
 
-def ITBarrel_cfg(args):
+def new_ITBarrel(args):
     """
     Create a new inner barrel digitiser instance with the given parameters.
     """
-    inputHitCollections = overlay_input("InnerTrackerBarrelCollection", args)
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayInnerTrackerBarrelCollection"]
+    else:
+        inputHitCollections = ["InnerTrackerBarrelCollection"]
     return DDPlanarDigi(
         "InnerBarrelDigitiser",
         CorrectTimesForPropagation = True,
-        IsStrip = False,
+        IsStrip = True,
         ResolutionT = [0.06],
         ResolutionU = [0.007],
         ResolutionV = [0.09],
@@ -21,15 +24,17 @@ def ITBarrel_cfg(args):
         SimTrackHitCollectionName = inputHitCollections,
         SimTrkHitRelCollection = ["ITBarrelHitsRelations"],
         TrackerHitCollectionName = ["ITBarrelHits"],
-        ForceHitsOntoSurface = True,
         OutputLevel = INFO
     )
 
-def ITEndcap_cfg(args):
+def new_ITEndcap(args):
     """
     Create a new inner endcap digitiser instance with the given parameters.
     """
-    inputHitCollections = overlay_input("InnerTrackerEndcapCollection", args)
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayInnerTrackerEndcapCollection"]
+    else:
+        inputHitCollections = ["InnerTrackerEndcapCollection"]
     return DDPlanarDigi(
         "InnerEndcapDigitiser",
         CorrectTimesForPropagation = True,
@@ -44,6 +49,109 @@ def ITEndcap_cfg(args):
         SimTrackHitCollectionName = inputHitCollections,
         SimTrkHitRelCollection = ["ITEndcapHitsRelations"],
         TrackerHitCollectionName = ["ITEndcapHits"],
-        ForceHitsOntoSurface = True,
+        OutputLevel = INFO
+    )
+
+def new_ITBarrel_Realistic(args):
+    """
+    Create a new inner barrel digitiser instance with realistic digitization.
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayInnerTrackerBarrelCollection"]
+    else:
+        inputHitCollections = ["InnerTrackerBarrelCollection"]
+    return MuonCVXDDigitiser(
+        "InnerBarrelDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 1.0,
+        PixelSizeX = 0.050,
+        TanLorentzY = 0.0,
+        TanLorentz = 0.8,
+        # Diffusion = 0.07,
+        Threshold = 1000.0,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 60000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.060,
+        LayerIDs = [0, 1, 2],
+        SubDetectorName = "InnerTrackerBarrel",
+        TimeWindowMax = 0.3,
+        TimeWindowMin = -0.18,
+        UseTimeWindow = True,
+        FilteredOutputCollectionName = ["ITBarrelHits_TimeFiltered"],
+        FilteredRelationColName = ["ITBarrelHitsRelations_TimeFiltered"],
+        FilteredRawHitsLinkColName = ["ITBarrelRawHitsRelations_TimeFiltered"],
+        CollectionName = inputHitCollections,
+        RelationColName = ["ITBarrelHitsRelations"],
+        SimHitLocCollectionName = ["ITBarrelHits_Passed"],
+        RawHitsLinkColName = ["ITBarrelRawHitsRelations"],
+        OutputCollectionName = ["ITBarrelHits"],
+        OutputLevel = INFO
+    )
+
+def new_ITEndcap_Realistic(args):
+    """
+    Create a new inner endcap digitiser instance with realistic digitization.
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayInnerTrackerEndcapCollection"]
+    else:
+        inputHitCollections = ["InnerTrackerEndcapCollection"]
+    return MuonCVXDDigitiser(
+        "InnerEndcapDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 1.0,
+        PixelSizeX = 0.050,
+        TanLorentzY = 0.0,
+        TanLorentz = 0.0,
+        # Diffusion = 0.07,
+        Threshold = 1000.0,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 60000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.060,
+        LayerIDs = [0, 1, 2, 3, 4, 5, 6],
+        SubDetectorName = "InnerTrackerEndcap",
+        TimeWindowMax = 0.3,
+        TimeWindowMin = -0.18,
+        UseTimeWindow = True,
+        FilteredOutputCollectionName = ["ITEndcapHits_TimeFiltered"],
+        FilteredRelationColName = ["ITEndcapHitsRelations_TimeFiltered"],
+        FilteredRawHitsLinkColName = ["ITEndcapRawHitsRelations_TimeFiltered"],
+        CollectionName = inputHitCollections,
+        RelationColName = ["ITEndcapHitsRelations"],
+        SimHitLocCollectionName = ["ITEndcapHits_Passed"],
+        RawHitsLinkColName = ["ITEndcapRawHitsRelations"],
+        OutputCollectionName = ["ITEndcapHits"],
         OutputLevel = INFO
     )
