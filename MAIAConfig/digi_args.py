@@ -85,4 +85,11 @@ def get_digi_args():
         default=False,
     )    
 
+    parser.add_argument(
+        "--doTimeWindowFilter",
+        help="Apply TrackerHitTimeWindowFilter to the realistic digitization output",
+        action="store_true",
+        default=False,
+    )
+
     return parser.parse_known_args()[0]

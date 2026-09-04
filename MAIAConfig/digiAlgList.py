@@ -30,6 +30,29 @@ def makeDigiAlgList(the_args):
         algList.append(new_ITEndcap_Realistic(the_args))
         algList.append(new_OTBarrel_Realistic(the_args))
         algList.append(new_OTEndcap_Realistic(the_args))
+
+        if the_args.doTimeWindowFilter:
+            from Configurables import TrackerHitTimeWindowFilter
+            TIME_FILTER_REGIONS = [
+                ("VXDBarrel", "VXDBarrelHits", "VXDBarrelHitsRelations", "VXDBarrelRawHitsRelations", -0.09, 0.15),
+                ("VXDEndcap", "VXDEndcapHits", "VXDEndcapHitsRelations", "VXDEndcapRawHitsRelations", -0.09, 0.15),
+                ("ITBarrel",  "ITBarrelHits",  "ITBarrelHitsRelations",  "ITBarrelRawHitsRelations",  -0.18, 0.3),
+                ("ITEndcap",  "ITEndcapHits",  "ITEndcapHitsRelations",  "ITEndcapRawHitsRelations",  -0.18, 0.3),
+                ("OTBarrel",  "OTBarrelHits",  "OTBarrelHitsRelations",  "OTBarrelRawHitsRelations",  -0.18, 0.3),
+                ("OTEndcap",  "OTEndcapHits",  "OTEndcapHitsRelations",  "OTEndcapRawHitsRelations",  -0.18, 0.3),
+            ]
+            for region, hits_name, rel_name, raw_rel_name, tmin, tmax in TIME_FILTER_REGIONS:
+                algList.append(TrackerHitTimeWindowFilter(
+                    f"{region}TimeFilter",
+                    InputHits=[hits_name],
+                    InputRelations=[rel_name],
+                    InputRawHitsRelations=[raw_rel_name],
+                    OutputHits=[f"{hits_name}_TimeFiltered"],
+                    OutputRelations=[f"{rel_name}_TimeFiltered"],
+                    OutputRawHitsRelations=[f"{raw_rel_name}_TimeFiltered"],
+                    TimeWindowMin=tmin,
+                    TimeWindowMax=tmax,
+                ))
     else:
         from TrackerDigi.tracking_vertex import new_VXDBarrel, new_VXDEndcap
         from TrackerDigi.tracking_inner import new_ITBarrel, new_ITEndcap
