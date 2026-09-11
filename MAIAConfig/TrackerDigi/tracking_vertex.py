@@ -1,6 +1,7 @@
 from GaudiKernel.Constants import INFO, WARNING
 from Configurables import DDPlanarDigi
 from Configurables import MuonCVXDDigitiser
+from Configurables import Realistic3DDigitiser
 
 def new_VXDBarrel(args):
     """
@@ -95,6 +96,98 @@ def new_VXDBarrel_Realistic(args):
         SimHitLocCollectionName = ["VertexBarrelHits_Passed"],
         RawHitsLinkColName = ["VXDBarrelRawHitsRelations"],
         OutputCollectionName = ["VXDBarrelHits"],
+        OutputLevel = INFO
+    )
+
+def new_VXDBarrel_3D(args):
+    """
+    Create a new vertex barrel digitiser instance using the 3D sensor
+    model (Realistic3DDigitiser)
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexBarrelCollection"]
+    else:
+        inputHitCollections = ["VertexBarrelCollection"]
+    return Realistic3DDigitiser(
+        "VertexBarrelDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 0.025,
+        PixelSizeX = 0.025,
+        ColumnRadius = 0.0025,
+        # Diffusion = 0.07,
+        Threshold = 500,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 15000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.03,
+        LayerIDs = [0, 1, 2, 4, 6],
+        SubDetectorName = "VertexBarrel",
+        CollectionName = inputHitCollections,
+        RelationColName = ["VXDBarrelHitsRelations"],
+        SimHitLocCollectionName = ["VertexBarrelHits_Passed"],
+        RawHitsLinkColName = ["VXDBarrelRawHitsRelations"],
+        OutputCollectionName = ["VXDBarrelHits"],
+        OutputLevel = INFO
+    )
+
+def new_VXDEndcap_3D(args):
+    """
+    Create a new vertex endcap digitiser instance using the 3D sensor
+    model (Realistic3DDigitiser)
+    """
+    if args.doOverlayFull:
+        inputHitCollections = ["OverlayVertexEndcapCollection"]
+    else:
+        inputHitCollections = ["VertexEndcapCollection"]
+    return Realistic3DDigitiser(
+        "VertexEndcapDigitiser",
+        PoissonSmearing = 1,
+        PixelSizeY = 0.025,
+        PixelSizeX = 0.025,
+        ColumnRadius = 0.0025,
+        # Diffusion = 0.07,
+        Threshold = 500,
+        DigitizeTime = 0,
+        DigitizeCharge = 1,
+        EnergyLoss = 280.0,
+        SegmentLength = 0.005,
+        MaxTrackLength = 10.0,
+        MaxEnergyDelta = 100.0,
+        CutOnDeltaRays = 0.030,
+        ChargeMaximum = 15000.0,
+        ElectronsPerKeV = 270.3,
+        TimeMaximum = 15.0,
+        ElectronicNoise = 80,
+        StoreFiredPixels = 1,
+        ElectronicEffects = 1,
+        TimeDigitizeBinning = 0,
+        ThresholdSmearSigma = 25,
+        TimeDigitizeNumBits = 10,
+        ChargeDigitizeBinning = 1,
+        ChargeDigitizeNumBits = 4,
+        TimeSmearingSigma = 0.03,
+        LayerIDs = [0, 1, 2, 3, 4, 5, 6, 7],
+        SubDetectorName = "VertexEndcap",
+        CollectionName = inputHitCollections,
+        RelationColName = ["VXDEndcapHitsRelations"],
+        SimHitLocCollectionName = ["VertexEndcapHits_Passed"],
+        RawHitsLinkColName = ["VXDEndcapRawHitsRelations"],
+        OutputCollectionName = ["VXDEndcapHits"],
         OutputLevel = INFO
     )
 

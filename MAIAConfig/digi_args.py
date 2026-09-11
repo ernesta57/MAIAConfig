@@ -92,4 +92,25 @@ def get_digi_args():
         default=False,
     )
 
-    return parser.parse_known_args()[0]
+    parser.add_argument(
+        "--do3DDigi",
+        help="Use Realistic3DDigitiser instead of MuonCVXDDigitiser for the subdetectors listed in --Detectors3D. --doRealisticDigi must be set",
+        action="store_true",
+        default=False,
+    )
+
+    parser.add_argument(
+        "--Detectors3D",
+        help="Which subdetector regions use the Realistic3DDigitiser when --do3DDigi is set",
+        type=str,
+        nargs="+",
+        default=["VXDBarrel"],
+        choices=["VXDBarrel", "VXDEndcap"],
+    )
+
+    the_args = parser.parse_known_args()[0]
+
+    if the_args.do3DDigi and not the_args.doRealisticDigi:
+        parser.error("--do3DDigi requires --doRealisticDigi to also be set")
+
+    return the_args

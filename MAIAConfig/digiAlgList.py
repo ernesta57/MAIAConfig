@@ -21,15 +21,41 @@ def makeDigiAlgList(the_args):
 
     # Tracker Digitization
     if (the_args.doRealisticDigi):
-        from TrackerDigi.tracking_vertex import new_VXDBarrel_Realistic, new_VXDEndcap_Realistic
+        from TrackerDigi.tracking_vertex import (
+            new_VXDBarrel_Realistic, new_VXDEndcap_Realistic,
+            new_VXDBarrel_3D, new_VXDEndcap_3D,
+        )
         from TrackerDigi.tracking_inner import new_ITBarrel_Realistic, new_ITEndcap_Realistic
         from TrackerDigi.tracking_outer import new_OTBarrel_Realistic, new_OTEndcap_Realistic
-        algList.append(new_VXDBarrel_Realistic(the_args))
-        algList.append(new_VXDEndcap_Realistic(the_args))
-        algList.append(new_ITBarrel_Realistic(the_args))
-        algList.append(new_ITEndcap_Realistic(the_args))
-        algList.append(new_OTBarrel_Realistic(the_args))
-        algList.append(new_OTEndcap_Realistic(the_args))
+
+        # MuonCVXDDigitiser
+        planar_builders = {
+            "VXDBarrel": new_VXDBarrel_Realistic,
+            "VXDEndcap": new_VXDEndcap_Realistic,
+            "ITBarrel":  new_ITBarrel_Realistic,
+            "ITEndcap":  new_ITEndcap_Realistic,
+            "OTBarrel":  new_OTBarrel_Realistic,
+            "OTEndcap":  new_OTEndcap_Realistic,
+        }
+        # Realistic3DDigitiser
+        realistic_3d_builders = {
+            "VXDBarrel": new_VXDBarrel_3D,
+            "VXDEndcap": new_VXDEndcap_3D,
+        }
+
+        if the_args.do3DDigi:
+            for region in the_args.Detectors3D:
+                if region not in realistic_3d_builders:
+                    raise ValueError(
+                        f"--Detectors3D requested '{region}', but no 3D-sensor "
+                        f"digitiser is implemented for it yet. Currently "
+                        f"available: {list(realistic_3d_builders.keys())}"
+                    )
+
+        for region, planar_builder in planar_builders.items():
+            use_3d = the_args.do3DDigi and region in the_args.Detectors3D
+            builder = realistic_3d_builders[region] if use_3d else planar_builder
+            algList.append(builder(the_args))
 
         if the_args.doTimeWindowFilter:
             from Configurables import TrackerHitTimeWindowFilter
