@@ -1,4 +1,4 @@
-from GaudiKernel.Constants import INFO, WARNING
+from GaudiKernel.Constants import INFO, WARNING, DEBUG
 from Configurables import DDPlanarDigi
 from Configurables import MuonCVXDDigitiser
 from Configurables import Realistic3DDigitiser
@@ -114,6 +114,9 @@ def new_VXDBarrel_3D(args):
         PixelSizeY = 0.025,
         PixelSizeX = 0.025,
         ColumnRadius = 0.0025,
+	BiasElectrodesEnabled = 0,
+	BiasColumnRadius = 0.0025,
+	ColumnGap = 0,
         # Diffusion = 0.07,
         Threshold = 500,
         DigitizeTime = 0,
@@ -142,7 +145,7 @@ def new_VXDBarrel_3D(args):
         SimHitLocCollectionName = ["VertexBarrelHits_Passed"],
         RawHitsLinkColName = ["VXDBarrelRawHitsRelations"],
         OutputCollectionName = ["VXDBarrelHits"],
-        OutputLevel = INFO
+        OutputLevel = DEBUG
     )
 
 def new_VXDEndcap_3D(args):
@@ -160,6 +163,9 @@ def new_VXDEndcap_3D(args):
         PixelSizeY = 0.025,
         PixelSizeX = 0.025,
         ColumnRadius = 0.0025,
+        BiasElectrodesEnabled = 0,
+        BiasColumnRadius = 0.0025,
+        ColumnGap = 0,
         # Diffusion = 0.07,
         Threshold = 500,
         DigitizeTime = 0,
@@ -188,7 +194,7 @@ def new_VXDEndcap_3D(args):
         SimHitLocCollectionName = ["VertexEndcapHits_Passed"],
         RawHitsLinkColName = ["VXDEndcapRawHitsRelations"],
         OutputCollectionName = ["VXDEndcapHits"],
-        OutputLevel = INFO
+        OutputLevel = DEBUG
     )
 
 def new_VXDEndcap_Realistic(args):
